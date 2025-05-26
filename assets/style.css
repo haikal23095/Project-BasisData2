@@ -1,0 +1,116 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   text-decoration: none;
+   font-family: "Poppins", sans-serif;
+}
+@media print {
+   .visible {
+      display: none;
+   }
+}
+.card-box {
+   position: relative;
+   color: #fff;
+   padding: 10px 20px;
+   margin: 20px 0;
+   border-radius: 5px;
+   display: flex;
+   justify-content: space-between; /* Membuat teks dan ikon berada pada sisi yang berlawanan */
+   align-items: center; /* Vertikal align ikon dan teks */
+}
+.card-box:hover {
+   text-decoration: none;
+   color: #f1f1f1;
+}
+.card-box:hover .icon i {
+   font-size: 80px;
+   transition: 0.5s;
+   /* -webkit-transition: 1s; */
+}
+.card-box .inner {
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+   align-items: flex-start; /* Letakkan teks di sisi kiri */
+}
+.card-box h3 {
+   font-size: 27px;
+   font-weight: bold;
+   margin: 0;
+   white-space: nowrap;
+   text-align: left;
+}
+.card-box p {
+   font-size: 15px;
+   margin: 0;
+}
+.card-box .icon {
+   font-size: 72px;
+   color: rgba(0, 0, 0, 0.15);
+   margin-left: auto; /* Dorong ikon ke kanan */
+}
+
+.bg-blue {
+   background-color: #00c0ef !important;
+}
+.bg-green {
+   background-color: #00a65a !important;
+}
+.bg-orange {
+   background-color: #f39c12 !important;
+}
+.bg-red {
+   background-color: #d9534f !important;
+}
+
+/* Table */
+
+.table {
+   border-collapse: collapse;
+   border-radius: 5px;
+   overflow: hidden;
+}
+
+.table th,
+.table td {
+   border: none;
+   padding: 12px 15px;
+}
+
+.table thead tr {
+   background-color: #f8f9fa;
+   color: #333;
+   text-align: left;
+}
+
+.table tbody tr:nth-of-type(even) {
+   background-color: #f3f3f3;
+}
+
+.table tbody tr:last-of-type {
+   border-bottom: 2px solid #009879;
+}
+
+.btn-sm {
+   padding: 0.25rem 0.5rem;
+   font-size: 0.875rem;
+   line-height: 1.5;
+   border-radius: 0.2rem;
+}
+
+@media print{
+   /* .btn{
+      display: none !important;
+   } */
+   nav{
+      display: none !important;
+   }
+   .table tbody tr:last-of-type {
+      border-bottom: 0px !important;
+   }
+}
+
