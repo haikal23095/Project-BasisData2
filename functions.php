@@ -2,12 +2,12 @@
 function checkLogin($data, &$err){
   $username = $data['username'];
   $pwd = $data['pwd'];
-
+  #echo($_SESSION['pwd']);
   $result = mysqli_query(DB, "SELECT * FROM user where username='$username' AND pwd=md5('$pwd')");
-
   if (mysqli_num_rows($result)>0){
     $user = mysqli_fetch_assoc($result);
     $_SESSION['user'] = $user;
+
     $_SESSION['level'] = $user['level']==1?'owner':'kasir';
     return header('location: index.php');
   }

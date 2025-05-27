@@ -8,7 +8,7 @@ $userList = getAllUser();
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-        <h3>Daftar User</h3>
+        <h3 class="fw-semibold">Daftar User</h3>
         <div class="d-flex justify-content-end">
             <a href="add.php"><button type="button" class="btn btn-success">Tambah User</button></a>
         </div>

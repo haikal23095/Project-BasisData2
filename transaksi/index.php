@@ -3,16 +3,16 @@ $title = "transaksi";
 $page = "transaksi";
 include_once "../layout/header.php";
 
-$transaksiList = getAllTransaksi();
+$transaksiList = getAllTransaksi(); 
 $pelangganList = getAllPelanggan();
 // print_r($pelangganList);
 ?>
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-        <h3>Daftar transaksi</h3>
+        <h3 class="fw-semibold">Daftar Transaksi</h3>
         <div class="d-flex justify-content-end">
-            <?php if ($level): ?>
+            <?php if ($level=='kasir'): ?>
             <form action="add.php" method="GET" class="d-flex">
                 <select name="pelanggan" class="form-select me-2" required>
                     <option value="" disabled selected>Pilih Pelanggan</option>

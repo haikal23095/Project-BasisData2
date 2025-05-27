@@ -54,7 +54,7 @@ include_once "layout/header.php";
         <a href="excel.php?start=<?=$start?>&end=<?=$end?>" class="btn btn-warning">Excel</a>
         <div class="row mt-5">
             <div class="col-md-6">
-                <h5>Grafik Penjualan</h5>
+                <h5 class="fw-semibold">Grafik Penjualan</h5>
                 <?php if ($getTransaksiSumBaseWaktu_ByDateRange): ?>
                     <canvas id="penjualanChart"></canvas>
                 <?php else: ?>
@@ -104,7 +104,7 @@ include_once "layout/header.php";
         </div>
 
     <?php else: ?>
-        <h2>Laporan Penjualan</h2>
+        <h2 class="fw-semibold">Laporan Penjualan</h2>
         <form action="" method="POST">
             <div class="d-flex justify-content-start mb-3">
                 <input type="date" name="start" class="me-3">

@@ -9,7 +9,7 @@ $barangLists = getAllBarang();
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-        <h3>Daftar barang</h3>
+        <h3 class="fw-semibold">Daftar Barang</h3>
         <a href="<?= BASEURL ?>/barang/add.php" class="btn btn-success">Tambah barang</a>
     </div>
     <div class="table-responsive">

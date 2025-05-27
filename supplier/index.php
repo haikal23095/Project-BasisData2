@@ -8,7 +8,7 @@ $supplierList = getAllSupplier();
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-        <h3>Daftar supplier</h3>
+        <h3 class="fw-semibold">Daftar Supplier</h3>
         <a href="add.php"><button type="button" class="btn btn-success">Tambah Supplier</button></a>
     </div>
     <div class="table-responsive">

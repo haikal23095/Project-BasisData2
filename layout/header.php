@@ -25,13 +25,13 @@ if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <link rel="stylesheet" href="<?= BASEURL ?>/assets/style.css">
-  <title>Hasil Tani Store | <?= $title ?></title>
+  <title>MANAJEMEN PERGUDANGAN | <?= $title ?></title>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="pembungkus container py-2">
-      <a class="navbar-brand fw-bold text-secondary visible" href="<?= BASEURL ?>/index.php">Hasil Tani Store</a>
+      <a class="navbar-brand fw-bold text-light visible" href="<?= BASEURL ?>/index.php">SISTEM MANAJEMEN PERGUDANGAN</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -74,12 +74,12 @@ if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$
         
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
-            <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="text-<?= ($page === 'profile') ? 'light fw-bold' : 'secondary'; ?>"><?php echo (isset($_SESSION['user']))? $_SESSION['user']['nama']:''?></span>
+            <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="text-<?= ($page === 'profile') ? 'light fw-bold' : 'light fw-bold'; ?>"><?php echo (isset($_SESSION['user']))? $_SESSION['user']['nama']:''?></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
               <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
-              <li><a class="dropdown-item bg-danger" href="<?= BASEURL ?>/logout.php" onclick="return confirm('apakah anda yakin ingin logout')">Logout</a></li>
+              <li><a class="dropdown-item bg-info text-light fw-semibold" href="<?= BASEURL ?>/logout.php" onclick="return confirm('apakah anda yakin ingin logout')">Logout</a></li>
             </ul>
           </li>
         </ul>
