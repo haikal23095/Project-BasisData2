@@ -2,15 +2,15 @@
 session_start();
 # SESUAIKAN SESUAIKAN DENGAN PATH DIRECTORY
 // include_once($_SERVER["DOCUMENT_ROOT"] . "/project_modul/config.php");
-include_once($_SERVER["DOCUMENT_ROOT"] . "/project_modul/config.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/Project-BasisData2/config.php");
 include_once(BASEPATH .  "/database.php");
 if (!isset($_SESSION['user'])){
-  header("location: /project_modul/login.php");
+  header("location: /Project-BasisData2/login.php");
   exit;
 }
 $level = ($_SESSION['level']);
 if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$page==='pelanggan')){
-  header("location: /project_modul/");
+  header("location: /Project-BasisData2/");
 }
 
 ?>

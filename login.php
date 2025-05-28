@@ -1,6 +1,6 @@
 <?php 
 session_start();
-include_once($_SERVER["DOCUMENT_ROOT"] . "/project_modul/config.php");
+include_once($_SERVER["DOCUMENT_ROOT"] . "/Project-BasisData2/config.php");
 include_once(BASEPATH . "/database.php");
 include_once(BASEPATH . "/functions.php");
 
