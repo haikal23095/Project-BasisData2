@@ -27,13 +27,13 @@ $supplierList = getAllSupplier();
                 <?php foreach ($supplierList as $supplier) : $nomor++; ?>
                     <tr>
                         <td><?= $nomor ?></td>
-                        <td><?= $supplier["nama"] ?></td>
-                        <td><?= $supplier["tel"] ?></td>
+                        <td><?= $supplier["nama_supplier"] ?></td>
+                        <td><?= $supplier["telepon"] ?></td>
                         <td><?= $supplier["alamat"]  ?></td>
                         <td>
                             <div class="d-flex" style="gap: 5px;">
-                                <a href="edit.php?id=<?= $supplier['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                                <a href="delete.php?id=<?= $supplier['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus supplier ini?')">Hapus</a>
+                                <a href="edit.php?id=<?= $supplier['id_supplier'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="delete.php?id=<?= $supplier['id_supplier'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus supplier ini?')">Hapus</a>
                             </div>
                         </td>
                     </tr>

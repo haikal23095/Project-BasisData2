@@ -4,11 +4,11 @@ include_once("config.php");
 // Fungsi untuk mendapatkan semua data dari tabel supplier
 function getAllSupplier() {
     $query = "SELECT * FROM supplier";
-    $result = DB->query($query);
+    $result = sqlsrv_query(DB, $query);
 
     $suppliers = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
+    if ($result && sqlsrv_has_rows($result)) {
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
             $suppliers[] = $row;
         }
     }
@@ -56,28 +56,37 @@ function getBarangNotYetByTransaksiID($transaksiID){
 // SELECT id, kode, `nama`, `harga`, `stok`, `id_supplier` FROM `barang` WHERE 1
 
 // Fungsi untuk mendapatkan semua data dari tabel transaksi
-function getAllTransaksi() {
+function getTransaksiKeluar() {
     
-    $query = "SELECT 
-        transaksi.id, 
-        transaksi.waktuTransaksi, 
-        transaksi.keterangan, 
-        transaksi.total, 
-        pelanggan.nama AS nama_pelanggan
-    FROM transaksi
-    JOIN pelanggan ON transaksi.id_pelanggan = pelanggan.id
-    order by waktuTransaksi";
-    $result = DB->query($query);
-
+    $query = "SELECT * FROM vw_riwayat_keluar
+                where TotalHarga > 0 order by Tanggal";
+    $result = sqlsrv_query(DB, $query);
     $transaksi = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
+    if ($result && sqlsrv_has_rows($result)) {
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
             $transaksi[] = $row;
         }
     }
     // DB->close();
     return $transaksi;
 }
+
+
+function getTransaksiMasuk() {
+
+    $query = "SELECT * FROM vw_riwayat_masuk
+                where TotalHarga > 0 order by Tanggal";
+    $result = sqlsrv_query(DB, $query);
+    $transaksi = [];
+    if ($result && sqlsrv_has_rows($result)) {
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
+            $transaksi[] = $row;
+        }
+    }
+    // DB->close();
+    return $transaksi;
+}
+
 
 // Fungsi untuk mendapatkan semua data dari tabel transaksi_detail
 function getAllTransaksiDetail() {
@@ -118,11 +127,11 @@ function getDataSupplierById($id){
 // }
 
 function getAllPelanggan(){
-    $query = "SELECT id, nama, gender, tel, alamat FROM pelanggan WHERE 1";
-    $result = DB->query($query);
+    $query = "SELECT id_customer, nama_customer, alamat, telepon FROM customer";
+    $result = sqlsrv_query(DB, $query);
     $pelanggan = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
+    if ($result && sqlsrv_has_rows($result)) {
+        while ($row = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC)) {
             $pelanggan[] = $row;
         }
     }
@@ -254,24 +263,44 @@ function insertDataUser($dataPOST){
 //     }
 // }
 
-function getDataDetailTransaksiByIDTransaksi($IDTransaksi){
-    $query = DB->query("SELECT 
-	barang.nama,
-	barang.harga,
-	transaksi_detail.harga_total,
-    transaksi_detail.qty
-    FROM transaksi_detail
-	join barang ON transaksi_detail.id_barang = barang.id
-    where transaksi_detail.id_transaksi = $IDTransaksi
+function getDataDetailTransaksiKeluarByID($IDTransaksi){
+    $query = sqlsrv_query(DB, "SELECT 
+	barang.nama_barang,
+	barang.harga_jual,
+	detail_transaksi_keluar.harga,
+    detail_transaksi_keluar.jumlah
+    FROM detail_transaksi_keluar
+	join barang ON detail_transaksi_keluar.id_barang = barang.id_barang
+    where detail_transaksi_keluar.id_transaksi_keluar = $IDTransaksi
     ");
     $result = [];
-    if ($query->num_rows>0){
-        while ($row = $query->fetch_assoc()) {
+    if ($query  && sqlsrv_has_rows($query)){
+        while ($row = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
             $result[] = $row;
         }
     }
     return $result;
 }
+
+function getDataDetailTransaksiMasukByID($IDTransaksi){
+    $query = sqlsrv_query(DB, "SELECT 
+	barang.nama_barang,
+	barang.harga_jual,
+	detail_transaksi_masuk.harga,
+    detail_transaksi_masuk.jumlah
+    FROM detail_transaksi_masuk
+	join barang ON detail_transaksi_masuk.id_barang = barang.id_barang
+    where detail_transaksi_masuk.id_transaksi_masuk = $IDTransaksi
+    ");
+    $result = [];
+    if ($query  && sqlsrv_has_rows($query)){
+        while ($row = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)) {
+            $result[] = $row;
+        }
+    }
+    return $result;
+}
+
 
 function updateDataSupplier($dataPOST){
     $nama = htmlspecialchars($dataPOST["nama"]);
@@ -288,17 +317,48 @@ function deleteSupplier($id){
     return DB->query($query);
 }
 
-function getDataTransaksiByID($id){
-    $query = DB->query("SELECT 
-    transaksi.id,
-    transaksi.keterangan,
-    transaksi.total,
-    transaksi.waktuTransaksi,
-    pelanggan.nama as nama_pelanggan
-    from transaksi join pelanggan on transaksi.id_pelanggan = pelanggan.id
-    where transaksi.id=$id");
-    return $query->fetch_assoc();
+function getDataTransaksiKeluarByID($id){
+    $sql = "SELECT 
+        transaksi_keluar.id_transaksi_keluar,
+        transaksi_keluar.metode_pembayaran,
+        total = (SELECT SUM(harga) FROM detail_transaksi_keluar WHERE id_transaksi_keluar = $id),
+        transaksi_keluar.tanggal,
+        customer.nama_customer
+        FROM transaksi_keluar 
+        JOIN customer ON transaksi_keluar.id_customer = customer.id_customer
+        WHERE transaksi_keluar.id_transaksi_keluar = $id";
+    $query = sqlsrv_query(DB, $sql);
+
+    if ($query === false) {
+        // Debug: tampilkan error SQLSRV
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    return sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC);
 }
+
+
+function getDataTransaksiMasukByID($id){
+    $sql = "SELECT 
+        transaksi_masuk.id_transaksi_masuk,
+        transaksi_masuk.metode_pembayaran,
+        total = (SELECT SUM(harga) FROM detail_transaksi_masuk WHERE id_transaksi_masuk = $id),
+        transaksi_masuk.tanggal,
+        supplier.nama_supplier
+        FROM transaksi_masuk
+        JOIN supplier ON transaksi_masuk.id_supplier = supplier.id_supplier
+        WHERE transaksi_masuk.id_transaksi_masuk = $id";
+    $query = sqlsrv_query(DB, $sql);
+
+    if ($query === false) {
+        // Debug: tampilkan error SQLSRV
+        die(print_r(sqlsrv_errors(), true));
+    }
+
+    return sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC);
+}
+
+
 // function getDataDetailTransaksiById($id){
 //     $query = DB->query("SELECT
 //     transaksi_detail.harga_total,

@@ -75,7 +75,7 @@ if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$
         <ul class="navbar-nav ml-auto">
           <li class="nav-item dropdown">
             <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="text-<?= ($page === 'profile') ? 'light fw-bold' : 'light fw-bold'; ?>"><?php echo (isset($_SESSION['user']))? $_SESSION['user']['nama']:''?></span>
+              <span class="text-<?= ($page === 'profile') ? 'light fw-bold' : 'light fw-bold'; ?>"><?php echo (isset($_SESSION['user']))? $_SESSION['user']['username']:''?></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
               <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->

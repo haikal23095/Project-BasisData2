@@ -3,8 +3,10 @@ $title = "transaksi";
 $page = "transaksi";
 include_once "../layout/header.php";
 
-$transaksiList = getAllTransaksi(); 
+$transaksiKeluar = getTransaksiKeluar(); 
+$transaksiMasuk = getTransaksiMasuk();
 $pelangganList = getAllPelanggan();
+// print_r($pelangganList)
 // print_r($pelangganList);
 ?>
 
@@ -17,7 +19,7 @@ $pelangganList = getAllPelanggan();
                 <select name="pelanggan" class="form-select me-2" required>
                     <option value="" disabled selected>Pilih Pelanggan</option>
                     <?php foreach ($pelangganList as $pelanggan) {?>
-                        <option value="<?=$pelanggan['id'].'#'.$pelanggan['nama']?>"><?php echo $pelanggan['nama']; ?></option>
+                        <option value="<?=$pelanggan['id_customer'].'#'.$pelanggan['nama_customer']?>"><?php echo $pelanggan['nama_customer']; ?></option>
                         <?php } ?>
                     </select>
                     <button type="submit" class="btn btn-success">Tambah</button>
@@ -28,12 +30,13 @@ $pelangganList = getAllPelanggan();
         </div>
     </div>
     <div class="table-responsive">
+        <h4 class="fw-semibold text-danger">Daftar Transaksi Keluar</h4>
         <table class="table table-hover table-bordered">
             <thead class="table-light">
                 <tr>
                     <th>No</th>
                     <th>Waktu Transaksi</th>
-                    <th>Keterangan</th>
+                    <th>Pembayaran</th>
                     <th>Total Harga</th>
                     <th>Pelanggan</th>
                     <th>Aksi</th>
@@ -41,16 +44,51 @@ $pelangganList = getAllPelanggan();
             </thead>
             <tbody>
                 <?php $nomor = 0;?>
-                <?php foreach ($transaksiList as $transaksi) : $nomor++; ?>
+                <?php foreach ($transaksiKeluar as $transaksi) : $nomor++; ?>
                     <tr>
                         <td><?= $nomor ?></td>
-                        <td><?= $transaksi["waktuTransaksi"] ?></td>
-                        <td><?= $transaksi["keterangan"] ?></td>
-                        <td><?= $transaksi["total"]  ?></td>
-                        <td><?= $transaksi["nama_pelanggan"] ?></td>
+                        <td><?= $transaksi["Tanggal"] instanceof DateTime ? $transaksi["Tanggal"]->format('Y-m-d') : $transaksi["Tanggal"] ?></td>
+                        <td><?= $transaksi["Pembayaran"] ?></td>
+                        <td><?= $transaksi["TotalHarga"]  ?></td>
+                        <td><?= $transaksi["Customer"] ?></td>
                         <td>
                             <div class="d-flex" style="gap: 5px;">
-                                <a href="read.php?id=<?= $transaksi['id'] ?>" class="btn btn-sm btn-info">Detail</a>
+                                <a href="read_keluar.php?id=<?= $transaksi["IDTransaksiKeluar"] ?>" class="btn btn-sm btn-info">Detail</a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div> <br><br><br><br>
+    
+
+    <!-- Transaksi Masuk -->
+    <div class="table-responsive">
+        <h4 class="fw-semibold text-primary">Daftar Transaksi Masuk</h4>
+        <table class="table table-hover table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>No</th>
+                    <th>Waktu Transaksi</th>
+                    <th>Pembayaran</th>
+                    <th>Total Harga</th>
+                    <th>Supplier</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $nomor = 0;?>
+                <?php foreach ($transaksiMasuk as $transaksi) : $nomor++; ?>
+                    <tr>
+                        <td><?= $nomor ?></td>
+                        <td><?= $transaksi["Tanggal"] instanceof DateTime ? $transaksi["Tanggal"]->format('Y-m-d') : $transaksi["Tanggal"] ?></td>
+                        <td><?= $transaksi["Pembayaran"] ?></td>
+                        <td><?= $transaksi["TotalHarga"]  ?></td>
+                        <td><?= $transaksi["Supplier"] ?></td>
+                        <td>
+                            <div class="d-flex" style="gap: 5px;">
+                                <a href="read_masuk.php?id=<?= $transaksi['IDTransaksiMasuk'] ?>" class="btn btn-sm btn-info">Detail</a>
                             </div>
                         </td>
                     </tr>

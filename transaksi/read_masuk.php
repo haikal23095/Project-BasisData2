@@ -5,9 +5,11 @@ include_once "../layout/header.php";
 
 if (isset($_GET['id'])){
   $id = $_GET['id'];
-  $detailTransaksi = getDataDetailTransaksiByIDTransaksi($id);
-  $getDataTransaksi = getDataTransaksiByID($id);
-  
+  // $detailTransaksiKeluar = getDataDetailTransaksiKeluarByID($id);
+  $detailTransaksiMasuk = getDataDetailTransaksiMasukByID($id);
+  // $getDataTransaksiKeluar = getDataTransaksiKeluarByID($id);
+  $getDataTransaksiMasuk = getDataTransaksiMasukByID($id);
+
 } else{
   header('Location: index.php');
   exit;
@@ -17,13 +19,17 @@ if (isset($_GET['id'])){
 
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-        <h3>ID Transaksi : <?php echo $getDataTransaksi['id'] ?> </h3>
-        <h3>Nama Pelanggan: <?php echo  $getDataTransaksi['nama_pelanggan'] ?></h3>
+        <h3>ID Transaksi : <?php echo $getDataTransaksiMasuk['id_transaksi_masuk'] ?> </h3>
+        <h3>Nama Supplier: <?php echo  $getDataTransaksiMasuk['nama_supplier'] ?></h3>
   </div>
-  
+
   <div class="d-flex justify-content-between align-items-center mb-4 pt-5">
-  <span> <strong>Keterangan: </strong><?= $getDataTransaksi['keterangan'] ?> </span>
-    <span> <strong>Waktu Transaksi:</strong>  <?= $getDataTransaksi['waktuTransaksi'] ?></span>
+  <span> <strong>Metode Pembayaran: </strong><?= $getDataTransaksiMasuk['metode_pembayaran'] ?> </span>
+    <span> <strong>Waktu Transaksi:</strong>
+    <?= ($getDataTransaksiMasuk['tanggal'] instanceof DateTime) 
+        ? $getDataTransaksiMasuk['tanggal']->format('Y-m-d') 
+        : $getDataTransaksiMasuk['tanggal'] ?>
+</span>
   </div>
   <p></p>
   <p></p>
@@ -33,23 +39,26 @@ if (isset($_GET['id'])){
           <tr>
               <th>Barang</th>
               <th>Harga</th>
-              <th>Qty</th>
-              <th>Harga Total</th>
+              <th>Jumlah</th>
+              <th>Harga Subtotal</th>
           </tr>
-          <?php foreach($detailTransaksi as $row):?>
+          <?php foreach($detailTransaksiMasuk as $row):?>
             <tr>
-              <td><?= $row['nama'] ?></td>
+              <td><?= $row['nama_barang'] ?></td>
+              <td><?= $row['harga_jual'] ?></td>
+              <td><?= $row['jumlah'] ?></td>
               <td><?= $row['harga'] ?></td>
-              <td><?= $row['qty'] ?></td>
-              <td><?= $row['harga_total'] ?></td>
             </tr>
           <?php endforeach?>
       </thead>
     </table>
   </div>
   <div>
-      <strong>Total Harga:</strong> <span id="totalHarga"><?= $getDataTransaksi['total'] ?></span>
+      <strong>Total Harga:</strong> <span id="totalHarga"><?= $getDataTransaksiMasuk['total'] ?></span>
       <input type="hidden" value="" id="totalHargaPost" name="totalHarga">
+</div>
+<div class="mt-4">
+      <a href="index.php" class="btn btn-secondary">&laquo; Kembali</a>
 </div>
 
 
@@ -64,8 +73,8 @@ if (isset($_GET['id'])){
   <div class="d-flex justify-content-center">
     <div class="card" style="min-width: 32rem;">
       <div class="card-body text-center">
-        <h4 class="card-title"><?= $detailTransaksi['nama_detailTransaksi'] ?></h4>
-        <p class="card-text"><?= $detailTransaksi['deskripsi'] ?></p>
+        <h4 class="card-title"><?= $detailTransaksiMasuk['nama_detailTransaksi'] ?></h4>
+        <p class="card-text"><?= $detailTransaksiMasuk['metode_pembayaran'] ?></p>
       </div>
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Jumlah SKS: <?= $detailTransaksi['sks'] ?></li>
