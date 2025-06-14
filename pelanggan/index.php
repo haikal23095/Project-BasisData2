@@ -20,10 +20,8 @@ $pelangganList = getAllPelanggan();
                 <tr>
                     <th>No</th>
                     <th>Nama</th>
-                    <th>Gender</th>
-                    <th>No HP</th>
                     <th>Alamat</th>
-                    <th>ID</th>
+                    <th>Telepon</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -31,15 +29,13 @@ $pelangganList = getAllPelanggan();
                 <?php $nomor = 0; foreach ($pelangganList as $row) : $nomor++; ?>
                     <tr>
                         <td><?= $nomor ?></td>
-                        <td><?= $row["nama"] ?></td>
-                        <td><?= ($row["gender"]=='') ? '-' : $row["gender"];?></td>
-                        <td><?= $row["tel"] ?></td>
-                        <td><?= $row["alamat"] ?></td>
-                        <td><?= $row["id"] ?></td>
+                        <td><?= $row["nama_customer"]?></td>
+                        <td><?= $row["alamat"]?></td>
+                        <td><?= $row["telepon"] ?></td>
                         <td>
                             <div class="d-flex" style="gap: 5px;">
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus Pelanggan ini?')">Hapus</a>
+                                <a href="edit.php?id=<?= $row['id_customer'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="delete.php?id=<?= $row['id_customer'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus Pelanggan ini?')">Hapus</a>
                             </div>
                         </td>
                     </tr>

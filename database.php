@@ -253,16 +253,6 @@ function insertDataUser($dataPOST){
     return DB->query($query);
 }
 
-// function runUpdate(){
-//     $pilih = DB->query("SELECT id, pwd FROM user");
-//     while ($row = $pilih->fetch_assoc()){
-//         $id = $row['id'];
-//         $pwd = $row['pwd'];
-//         $pwd_md5 = md5($pwd);
-//         $update = DB->query("UPDATE user set pwd='$pwd_md5' where id=$id");
-//     }
-// }
-
 function getDataDetailTransaksiKeluarByID($IDTransaksi){
     $query = sqlsrv_query(DB, "SELECT 
 	barang.nama_barang,
@@ -358,24 +348,6 @@ function getDataTransaksiMasukByID($id){
     return sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC);
 }
 
-
-// function getDataDetailTransaksiById($id){
-//     $query = DB->query("SELECT
-//     transaksi_detail.harga_total,
-//     transaksi_detail.qty,
-//     barang.nama as nama_barang,
-//     barang.harga as harga_barang
-//     FROM transaksi_detail JOIN barang ON barang.id = transaksi_detail.id_barang
-//     where id_transaksi=$id
-//     ");
-//     $result = [];
-//     if ($query->num_rows>0){
-//         while ($row = $query->fetch_assoc()) {
-//             $result[] = $row;
-//         }
-//     }
-//     return $result;
-// }
 
 function getDataUserByID($id){
     $query = DB->query("SELECT * FROM user where id=$id");
