@@ -6,7 +6,7 @@ define('BASEURL', "http://localhost/Project-BasisData2");
 define('BASEPATH', $_SERVER["DOCUMENT_ROOT"] . "/Project-BasisData2");
 //define('BASEPATH', $_SERVER["DOCUMENT_ROOT"] . "/project_modul");
 
-$serverName = "34.126.94.46"; // atau IP / nama instance
+$serverName = "34.142.189.206"; // atau IP / nama instance
 $connectionOptions = [
     "Database" => "basisdata2",
     "Uid" => "SA",

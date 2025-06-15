@@ -3,7 +3,7 @@ $title = "Supplier";
 $page = "supplier";
 include_once "../layout/header.php";
 
-$supplierList = getAllSupplier();
+$supplierList = getAllSuppliers();
 ?>
 
 <div class="container">
@@ -19,7 +19,7 @@ $supplierList = getAllSupplier();
                     <th>Nama</th>
                     <th>Telepon</th>
                     <th>Alamat</th>
-                    <th>Aksi</th>
+                    <!-- <th>Aksi</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -30,12 +30,12 @@ $supplierList = getAllSupplier();
                         <td><?= $supplier["nama_supplier"] ?></td>
                         <td><?= $supplier["telepon"] ?></td>
                         <td><?= $supplier["alamat"]  ?></td>
-                        <td>
+                        <!-- <td>
                             <div class="d-flex" style="gap: 5px;">
                                 <a href="edit.php?id=<?= $supplier['id_supplier'] ?>" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="delete.php?id=<?= $supplier['id_supplier'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus supplier ini?')">Hapus</a>
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php endforeach; ?>
             </tbody>

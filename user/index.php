@@ -19,9 +19,9 @@ $userList = getAllUser();
                 <tr>
                     <th>No</th>
                     <th>Username</th>
-                    <th>Nama</th>
+                    <th>ID</th>
                     <th>Level</th>
-                    <th>Aksi</th>
+                    <!-- <th>Aksi</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -29,15 +29,14 @@ $userList = getAllUser();
                     <tr>
                         <td><?= $nomor ?></td>
                         <td><?= $row["username"] ?></td>
-                        <td><?= $row["nama"] ?></td>
+                        <td><?= $row["id"] ?></td>
                         <td><?php echo ($row["level"]==1)? "Owner" : "Kasir"; ?></td>
-                        <td>
+                        <!-- <td>
                             <div class="d-flex" style="gap: 5px;">
                                 <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus user ini?')">Hapus</a>
-                                <a href="read.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Detail</a>
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php endforeach; ?>
             </tbody>

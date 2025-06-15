@@ -5,92 +5,67 @@ $page = "barang";
 include_once("../layout/header.php");
 include_once(BASEPATH . "/functions.php");
 
-// kode
-// nama
-// harga
-// stok
-// id_supplier
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = [
-        'kode'=>'',
-        'nama'=>'',
-        'harga'=>'',
-        'stok'=>'',
-        'id_supplier'=>''
+        'nama_barang' => '',
+        'harga_jual' => '',
+        'stok' => '',
     ];
 
-    // var_dump($_POST);
-    $kode = trim($_POST['kode']);
-    $nama = trim($_POST['nama']);
-    $harga = trim($_POST['harga']);
+    $nama_barang = trim($_POST['nama_barang']);
+    $harga_jual = trim($_POST['harga_jual']);
     $stok = trim($_POST['stok']);
-    $id_supplier =  (isset($_POST['id_supplier'])) ? $_POST['id_supplier'] : '';
 
-    validateKode($kode, $errors['kode']) ;
-    validateBarangName($nama, $errors['nama']) ;
-    validateNumber($harga, $errors['harga']) ;
-    validateInt($stok, $errors['stok']) ;
-    validateSelectInput($id_supplier, $errors['id_supplier']) ;
+    validateBarangName($nama_barang, $errors['nama_barang']);
+    validateNumber($harga_jual, $errors['harga_jual']);
+    validateInt($stok, $errors['stok']);
 
-    if (empty($errors['kode']) && empty($errors['nama']) && empty($errors['harga']) && empty($errors['stok']) && empty($errors['id_supplier']) ){
-        if (insertDataBarang($_POST)) {
+    if (empty($errors['nama_barang']) && empty($errors['harga_jual']) && empty($errors['stok'])) {
+        $data = [
+            'nama_barang' => $nama_barang,
+            'harga_jual' => $harga_jual,
+            'stok' => $stok,
+        ];
+        if (insertDataBarang($data)) {
             header("Location: " . BASEURL . "/barang/index.php");
+            exit;
         } else {
-            echo "<script>
-            alert('data gagal di ubah');
-            </script>";
+            echo "<script>alert('Data gagal disimpan');</script>";
         }
     }
 }
-
-$suppliers = getAllSupplier();
 ?>
 
 <div class="container">
     <h2 class="py-4"><?= $title ?></h2>
     <form action="" method="POST">
         <div class="mb-3">
-            <label for="nama" class="form-label fw-bold">Nama</label>
-            <input type="text" class="form-control" id="nama" name="nama" value="<?= (isset($_POST['nama']))? $_POST['nama']:'' ?>">
+            <label for="nama_barang" class="form-label fw-bold">Nama Barang</label>
+            <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="<?= htmlspecialchars($_POST['nama_barang'] ?? '') ?>">
+            <?php if (!empty($errors['nama_barang'])): ?>
+                <div class="alert alert-danger p-2 mt-1"><?= $errors['nama_barang'] ?></div>
+            <?php endif; ?>
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['nama'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['nama'].'</div><br>' : ''; } ?>
-        
-        <div class="mb-3">
-            <label for="kode" class="form-label fw-bold">Kode</label>
-            <input type="text" class="form-control" id="kode" name="kode" value="<?= (isset($_POST['kode']))? $_POST['kode']:'' ?>">
-        </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['kode'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['kode'].'</div><br>' : ''; } ?>
 
         <div class="mb-3">
-            <label for="harga" class="form-label fw-bold">Harga</label>
-            <input type="text" class="form-control" id="harga" name="harga" value="<?= (isset($_POST['harga']))? $_POST['harga']:'' ?>">
+            <label for="harga_jual" class="form-label fw-bold">Harga Jual</label>
+            <input type="text" class="form-control" id="harga_jual" name="harga_jual" value="<?= htmlspecialchars($_POST['harga_jual'] ?? '') ?>">
+            <?php if (!empty($errors['harga_jual'])): ?>
+                <div class="alert alert-danger p-2 mt-1"><?= $errors['harga_jual'] ?></div>
+            <?php endif; ?>
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['harga'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['harga'].'</div><br>' : ''; } ?>
 
         <div class="mb-3">
             <label for="stok" class="form-label fw-bold">Stok</label>
-            <input type="text" class="form-control" id="stok" name="stok" value="<?= (isset($_POST['stok']))? $_POST['stok']:'' ?>">
+            <input type="text" class="form-control" id="stok" name="stok" value="<?= htmlspecialchars($_POST['stok'] ?? '') ?>">
+            <?php if (!empty($errors['stok'])): ?>
+                <div class="alert alert-danger p-2 mt-1"><?= $errors['stok'] ?></div>
+            <?php endif; ?>
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['stok'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['stok'].'</div><br>' : ''; } ?>
-
-        <div class="mb-3">
-            <label for="id_supplier" class="form-label fw-bold">Supplier</label>
-            <select class="form-select" aria-label="Default select example" name="id_supplier">
-                <option disabled selected value=""> --- Pilih --- </option>
-                <?php foreach ($suppliers as $row): ?>
-                    <option value="<?=$row['id']?>" <?= (isset($_POST['id_supplier']) && $_POST['id_supplier'] == $row['id']) ? 'selected' : '' ?> ><?=$row['nama'] ?></option>
-                <?php endforeach?>
-            </select>
-        </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['id_supplier'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['id_supplier'].'</div><br>' : ''; }?>
 
         <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
         <a href="<?= BASEURL ?>/barang" class="btn btn-secondary">Batal</a>
     </form>
 </div>
 
-
-
-
-<?php
-include_once("../layout/footer.php");
+<?php include_once("../layout/footer.php"); ?>

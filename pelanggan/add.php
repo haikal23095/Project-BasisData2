@@ -1,42 +1,32 @@
 <?php
-$title = "Tambah Pelanggan";
-$page = "pelanggan";
+$title = "Tambah customer";
+$page = "Pelanggan";
 
 include_once("../layout/header.php");
 include_once(BASEPATH . "/functions.php");
 
-
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $errors = [
-        'nama'=>'',
-        'gender'=>'',
-        'tel'=>'',
+        'nama_customer'=>'',
+        'telepon'=>'',
         'alamat'=>''
     ];
 
-// nama
-// gender
-// tel
-// alamat
-    $nama = trim($_POST['nama']);
-    $gender = isset($_POST['gender']) ? trim($_POST['gender']) : '-';
-    $tel = trim($_POST['tel']);
+    $nama_customer = trim($_POST['nama_customer']);
+    $telepon = trim($_POST['telepon']);
     $alamat = trim($_POST['alamat']);
-    // $id = $_POST['id'];
+
     $data = [
-        'nama'=>$nama,
-        'gender'=>$gender,
-        'tel'=>$tel,
+        'nama_customer'=>$nama_customer,
+        'telepon'=>$telepon,
         'alamat'=>$alamat
-        // 'id'=>$id,
     ];
 
-    validateName($nama, $errors['nama']) ;
-    // validateSelectInput($gender, $errors['gender']) ;
-    validateTel($tel, $errors['tel']) ;
-    validateAlamat($alamat, $errors['alamat']) ;
+    validateName($nama_customer, $errors['nama_customer']);
+    validateTel($telepon, $errors['telepon']);
+    validateAlamat($alamat, $errors['alamat']);
 
-    if (empty($errors['nama']) && empty($errors['gender']) && empty($errors['tel']) && empty($errors['alamat'])){
+    if (empty($errors['nama_customer']) && empty($errors['telepon']) && empty($errors['alamat'])){
         if (insertDataPelanggan($data)) {
             header("Location: " . BASEURL . "/pelanggan/index.php");
         } else {
@@ -51,32 +41,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <h2 class="py-4"><?= $title ?></h2>
     <form action="" method="POST">
         <div class="mb-3">
-            <label for="nama" class="form-label fw-bold">Nama</label>
-            <input type="text" class="form-control" id="nama" name="nama" value="<?php if (isset($_POST['nama'])) echo $_POST['nama']?>"  >
+            <label for="nama_customer" class="form-label fw-bold">Nama Customer</label>
+            <input type="text" class="form-control" id="nama_customer" name="nama_customer" value="<?php if (isset($_POST['nama_customer'])) echo $_POST['nama_customer']?>"  >
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['nama'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['nama'].'</div><br>' : ''; }?>
+        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['nama_customer'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['nama_customer'].'</div><br>' : ''; }?>
 
         <div class="mb-3">
-            <label for="tel" class="form-label fw-bold">Nomor HP</label>
-            <input type="tel" class="form-control" id="tel" name="tel" value="<?php if (isset($_POST['tel'])) echo $_POST['tel'] ?>" >
+            <label for="telepon" class="form-label fw-bold">Telepon</label>
+            <input type="tel" class="form-control" id="telepon" name="telepon" value="<?php if (isset($_POST['telepon'])) echo $_POST['telepon'] ?>" >
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['tel'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['tel'].'</div><br>' : ''; }?>
+        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['telepon'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['telepon'].'</div><br>' : ''; }?>
 
         <div class="mb-3">
             <label for="alamat" class="form-label fw-bold">Alamat</label>
-            <textarea class="form-control" name="alamat" id="exampleFormControlTextarea1" rows="3"><?= (isset($_POST['alamat'])) ? $_POST['alamat']:'' ?></textarea>
+            <textarea class="form-control" name="alamat" id="alamat" rows="3"><?= (isset($_POST['alamat'])) ? $_POST['alamat']:'' ?></textarea>
         </div>
         <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['alamat'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['alamat'].'</div><br>' : ''; }?>
-
-        <div class="mb-3">
-            <label for="gender" class="form-label fw-bold">Gender</label>
-            <select class="form-select" aria-label="Default select example" name="gender">
-                <option disabled selected> --- Pilih ---</option>
-                <option value="L" <?= (isset($_POST['gender']) && $_POST['gender'] == 'L') ? 'selected' : '' ?> >Male</option>
-                <option value="P" <?= (isset($_POST['gender']) && $_POST['gender'] == 'P') ? 'selected' : '' ?> >Female</option>
-            </select>
-        </div>
-        <?php if ($_SERVER['REQUEST_METHOD']=='POST'){ echo (!empty($errors['gender'])) ? '<div class=\'alert alert-danger p-2\'>'.$errors['gender'].'</div><br>' : ''; }?>
 
         <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
         <a href="<?= BASEURL ?>/pelanggan" class="btn btn-secondary">Batal</a>

@@ -2,125 +2,115 @@
 $title = "Report";
 $page = "report";
 include_once "layout/header.php";
-?>
-<style>
-/* Media Print */
-@media print {
-    nav, button, a.btn, .d-flex {
-        display: none !important;
-    }
 
-    .container {
-        margin: 0;
-        padding: 0;
-    }
+$data = [];
+$report_type = $_GET['report_type'] ?? '';
+$tgl1 = $_GET['tgl1'] ?? '';
+$tgl2 = $_GET['tgl2'] ?? '';
 
-    .table tbody tr:last-of-type {
-        border-bottom: 1px black !important;
-    }
-
-    br{
-        display: none;
+if ($report_type) {
+    if ($report_type === 'sp_margin_range_tgl' && $tgl1 && $tgl2) {
+        $data = getMarginDataByDateRange($tgl1, $tgl2);
+    } elseif (in_array($report_type, ['margin_perbarang_percustomer', 'penjualan_barang_harian'])) {
+        $data = getViewData($report_type);
     }
 }
-</style>
+
+$totals = [];
+foreach ($data as $row) {
+    foreach ($row as $key => $value) {
+        if (is_numeric($value)) {
+            if (!isset($totals[$key])) $totals[$key] = 0;
+            $totals[$key] += $value;
+        }
+    }
+}
+
+?>
+
 <div class="container my-4">
-    <!-- <h2>Laporan Penjualan</h2> -->
-    
-    <?php if ($_SERVER['REQUEST_METHOD']=="POST"):
-        $start = $_POST['start'];
-        $end = $_POST['end'];
-        echo "<span><b>Laporan Penjualan</b> dari $start sampai $end</span><br><br>";
-        echo"<a href='report.php'>
-        <button type='button' class='btn btn-primary mb-3'>< Kembali</button>
-        </a>";
-        $getTransaksiSumBaseWaktu_ByDateRange = getTransaksiSumBaseWaktu_ByDateRange($start, $end);
-        $n_pelanggan_AND_total_pendapatan = getJumlahPelangganAndPendapatanByDateRange($start, $end);
-
-        // echo "<br>Hasil: <br>";
-        // foreach (getTransaksiSumBaseWaktu_ByDateRange($start, $end) as $x){
-        //     var_dump($x);echo "<br><br>";
-        // };
-
-        // foreach ($getTransaksiSummaryByDateRange as $key => $value) {
-        //     echo "<br>";
-        //     echo "<br>";
-        //     var_dump($key);echo " --- ";var_dump($value);
-        // }
-        ?>
-        <br>
-
-        <button class="btn btn-warning" onclick="window.print();">Cetak PDF</button>
-        <a href="excel.php?start=<?=$start?>&end=<?=$end?>" class="btn btn-warning">Excel</a>
-        <div class="row mt-5">
-            <div class="col-md-6">
-                <h5 class="fw-semibold">Grafik Penjualan</h5>
-                <?php if ($getTransaksiSumBaseWaktu_ByDateRange): ?>
-                    <canvas id="penjualanChart"></canvas>
-                <?php else: ?>
-                    <p>Belum ada data Penjualan</p>
-                <?php endif ?>
-            </div>
+    <h3 class="mb-4">Laporan</h3>
+    <form method="GET" class="row g-3">
+        <div class="col-md-4">
+            <label for="report_type" class="form-label">Pilih Laporan</label>
+            <select name="report_type" id="report_type" class="form-select" onchange="toggleDateInputs()">
+                <option value="">-- Pilih --</option>
+                <option value="margin_perbarang_percustomer" <?= $report_type == 'margin_perbarang_percustomer' ? 'selected' : '' ?>>Margin per Barang per Customer</option>
+                <option value="penjualan_barang_harian" <?= $report_type == 'penjualan_barang_harian' ? 'selected' : '' ?>>penjualan barang harian</option>
+                <option value="sp_margin_range_tgl" <?= $report_type == 'sp_margin_range_tgl' ? 'selected' : '' ?>>Margin Berdasarkan Tanggal (SP)</option>
+            </select>
         </div>
 
-        <div class="row mt-5">
-            <div class="col-md-8">
-                <!-- <h5>Laporan Penjualan</h5> -->
-                <?php if ($getTransaksiSumBaseWaktu_ByDateRange): 
-                    
-                    ?>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Total</th>
-                                <th>Tanggal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php $no=0;foreach ($getTransaksiSumBaseWaktu_ByDateRange as $transaksi) :$no++;                                ?>
-                                <tr>
-                                    <td><?= $no ?></td>
-                                    <td><?= $transaksi['total_harian']; ?></td>
-                                    <td><?= $transaksi['waktuTransaksi']; ?></td>
-                                </tr>
+        <div class="col-md-3 date-range" style="display: <?= $report_type === 'sp_margin_range_tgl' ? 'block' : 'none' ?>">
+            <label for="tgl1" class="form-label">Tanggal Awal</label>
+            <input type="date" name="tgl1" id="tgl1" class="form-control" value="<?= $tgl1 ?>">
+        </div>
+
+        <div class="col-md-3 date-range" style="display: <?= $report_type === 'sp_margin_range_tgl' ? 'block' : 'none' ?>">
+            <label for="tgl2" class="form-label">Tanggal Akhir</label>
+            <input type="date" name="tgl2" id="tgl2" class="form-control" value="<?= $tgl2 ?>">
+        </div>
+
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">Tampilkan</button>
+        </div>
+    </form>
+
+    <hr class="my-4">
+    <?php if ($data): ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <?php foreach (array_keys($data[0]) as $col): ?>
+                            <th><?= htmlspecialchars($col) ?></th>
+                        <?php endforeach; ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($data as $row): ?>
+                        <tr>
+                            <?php foreach ($row as $cell): ?>
+                                <td>
+                                    <?= is_object($cell) ? $cell->format('Y-m-d') : (is_numeric($cell) ? number_format(htmlspecialchars($cell), 0, ',', '.') : htmlspecialchars($cell)) ?>
+                                </td>
                             <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <table class="table table-bordered">
-                        <tr>
-                            <th colspan="2">Jumlah Pelanggan</th>
-                            <td colspan="3"><?= $n_pelanggan_AND_total_pendapatan['jumlah_pelanggan']; ?> Orang</td>
                         </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <?php if (!empty($totals)): ?>
+                    <tfoot>
                         <tr>
-                            <th colspan="2">Jumlah Pendapatan</th>
-                            <td colspan="3"><?= $n_pelanggan_AND_total_pendapatan['jumlah_pendapatan']; ?></td>
+                            <?php foreach (array_keys($data[0]) as $col): ?>
+                                <th>
+                                    <?= isset($totals[$col])
+                                        ? number_format($totals[$col], 0, ',', '.')
+                                        : '' ?>
+                                </th>
+                            <?php endforeach; ?>
                         </tr>
-                    </table>
-                <?php else: ?>
-                    <p>Belum ada data</p>
-                <?php endif ?>
-            </div>
+                    </tfoot>
+                <?php endif; ?>
+            </table>
         </div>
 
-    <?php else: ?>
-        <h2 class="fw-semibold">Laporan Penjualan</h2>
-        <form action="" method="POST">
-            <div class="d-flex justify-content-start mb-3">
-                <input type="date" name="start" class="me-3">
-                <input type="date" name="end" class="me-3">
-                <button type="submit" class="btn btn-success">Tampilkan</button>
-            </div>
-        </form>
-    <?php endif?>
+        <!-- <button class="btn btn-success mt-3" onclick="window.print()">Cetak</button> -->
+    <?php elseif ($report_type): ?>
+        <div class="alert alert-warning mt-3">Tidak ada data ditemukan untuk pilihan ini.</div>
+    <?php endif; ?>
 </div>
 
+<script>
+function toggleDateInputs() {
+    const select = document.getElementById('report_type');
+    const showDates = select.value === 'sp_margin_range_tgl';
+    document.querySelectorAll('.date-range').forEach(el => {
+        el.style.display = showDates ? 'block' : 'none';
+    });
+}
+</script>
 
-    <?php
-    include_once "layout/footer.php";
-    ?>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
     // Data untuk label dan value dari PHP
@@ -165,4 +155,8 @@ include_once "layout/header.php";
             }
         }
     });
-</script>
+</script> -->
+
+<?php include_once "layout/footer.php"; ?>
+
+
