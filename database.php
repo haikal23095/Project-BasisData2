@@ -91,6 +91,21 @@ function getAllTransaksiDetail() {
     return $transaksiDetail;
 }
 
+function insertDataBarang($data) {
+    $conn = DB;
+
+    $query = "INSERT INTO barang (nama_barang, harga_jual, stok) VALUES (?, ?, ?)";
+    $params = [
+        $data['nama_barang'],
+        $data['harga_jual'],
+        $data['stok']
+    ];
+
+    $stmt = sqlsrv_query($conn, $query, $params);
+
+    return $stmt !== false;
+}
+
 
 function insertDataSupplier($data){
     $nama = htmlspecialchars($data["nama"]);
