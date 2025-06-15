@@ -4,7 +4,6 @@ $page = "barang";
 include_once "../layout/header.php";
 
 $barangLists = getAllBarang();
-// print_r($barangLists);
 ?>
 
 <div class="container">
@@ -17,29 +16,21 @@ $barangLists = getAllBarang();
             <thead class="table-light">
                 <tr>
                     <th>ID</th>
-                    <th>Kode Barang</th>
                     <th>Nama Barang</th>
-                    <th>Harga</th>
                     <th>Stok</th>
-                    <th>Nama Supplier</th>
-                    <th>Aksi</th>
+                    <th>Harga Jual</th>
+                    <th>Aksi</th> 
                 </tr>
             </thead>
             <tbody>
-                <?php $nomor = 0;?>
-                <?php foreach ($barangLists as $row) :?>
+                <?php foreach ($barangLists as $row) : ?>
                     <tr>
-                        <td><?= $row["id"] ?></td>
-                        <td><?= $row["kode"] ?></td>
-                        <td><?= $row["nama"]  ?></td>
-                        <td><?= $row["harga"] ?></td>
-                        <td><?= $row["stok"] ?></td>
-                        <td><?= $row["nama_supplier"] ?></td>
+                        <td><?= $row["id_barang"] ?></td>
+                        <td><?= $row["nama_barang"] ?></td>
+                        <td><?= $row["stok"]  ?></td>
+                        <td><?= number_format($row["harga_jual"], 0, ',', '.') ?></td>
                         <td>
-                            <div class="d-flex" style="gap: 5px;">
-                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus barang ini?')">Hapus</a>
-                            </div>
+                            <a href="edit.php?id=<?= $row['id_barang'] ?>" class="btn btn-sm btn-warning">Edit</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -47,6 +38,7 @@ $barangLists = getAllBarang();
         </table>
     </div>
 </div>
+
 
 
 <?php

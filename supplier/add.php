@@ -31,9 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (empty($errors['nama']) && empty($errors['tel']) && empty($errors['alamat'])){
         if (insertDataSupplier($_POST)) {
             header("Location: " . BASEURL . "/supplier/index.php");
+            exit;
         } else {
             echo "<script>
-            alert('data gagal di ubah');
+            alert('data gagal ditambahkan');
             </script>";
         }
     }

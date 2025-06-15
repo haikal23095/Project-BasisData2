@@ -42,19 +42,20 @@ if (isset($_GET['id'])){
               <th>Jumlah</th>
               <th>Harga Subtotal</th>
           </tr>
-          <?php foreach($detailTransaksiKeluar as $row):?>
+          <?php $total=0; foreach($detailTransaksiKeluar as $row):?>
             <tr>
-              <td><?= $row['nama_barang'] ?></td>
-              <td><?= $row['harga_jual'] ?></td>
-              <td><?= $row['jumlah'] ?></td>
-              <td><?= $row['harga'] ?></td>
+              <td><?= $row['Barang'] ?></td>
+              <td><?= number_format($row['Harga'],0,',','.') ?></td>
+              <td><?= $row['Jumlah'] ?></td>
+              <td><?= number_format($row['Subtotal'],0,',','.') ?></td>
+              <?php $total+=$row['Subtotal'] ?>
             </tr>
           <?php endforeach?>
       </thead>
     </table>
   </div>
   <div>
-      <strong>Total Harga:</strong> <span id="totalHarga"><?= $getDataTransaksiKeluar['total'] ?></span>
+      <strong>Total Harga:</strong> <span id="totalHarga"><?= number_format($total,0,',','.') ?></span>
       <input type="hidden" value="" id="totalHargaPost" name="totalHarga">
 </div>
 <div class="mt-4">

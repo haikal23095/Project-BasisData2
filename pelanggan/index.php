@@ -1,9 +1,9 @@
 <?php
-$title = "Pelanggan";
-$page = "pelanggan";
+$title = "Customer";
+$page = "customer";
 include_once "../layout/header.php";
 
-$pelangganList = getAllPelanggan();
+$pelangganList = getAllCustomers();
 // var_dump($pelangganList[8]);
 ?> 
 
@@ -22,7 +22,7 @@ $pelangganList = getAllPelanggan();
                     <th>Nama</th>
                     <th>Alamat</th>
                     <th>Telepon</th>
-                    <th>Aksi</th>
+                    <!-- <th>Aksi</th> -->
                 </tr>
             </thead>
             <tbody>
@@ -32,12 +32,12 @@ $pelangganList = getAllPelanggan();
                         <td><?= $row["nama_customer"]?></td>
                         <td><?= $row["alamat"]?></td>
                         <td><?= $row["telepon"] ?></td>
-                        <td>
+                        <!-- <td>
                             <div class="d-flex" style="gap: 5px;">
                                 <a href="edit.php?id=<?= $row['id_customer'] ?>" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="delete.php?id=<?= $row['id_customer'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus Pelanggan ini?')">Hapus</a>
                             </div>
-                        </td>
+                        </td> -->
                     </tr>
                 <?php endforeach; ?>
             </tbody>

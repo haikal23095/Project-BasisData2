@@ -9,7 +9,7 @@ if (!isset($_SESSION['user'])){
   exit;
 }
 $level = ($_SESSION['level']);
-if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$page==='pelanggan')){
+if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$page==='customer')){
   header("location: /Project-BasisData2/");
 }
 
@@ -29,61 +29,65 @@ if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="pembungkus container py-2">
-      <a class="navbar-brand fw-bold text-light visible" href="<?= BASEURL ?>/index.php">SISTEM MANAJEMEN PERGUDANGAN</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<?php
+// Tentukan judul master menu dan apakah aktif
+$masterPages = ['barang', 'supplier', 'customer', 'user'];
+$isMasterActive = in_array($page, $masterPages);
+$masterTitle = $isMasterActive ? ucfirst($page) : 'Master';
+?>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container py-2">
+    <a class="navbar-brand fw-bold text-light" href="<?= BASEURL ?>/index.php">SISTEM MANAJEMEN PERGUDANGAN</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item">
-            <a class="nav-link <?= ($page === "home") ? 'text-light fw-bold' : '' ?>" href="<?= BASEURL ?>/index.php">Home</a>
-          </li>
-          <?php if ($level==='owner'): ?>
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav mx-auto">
+        <!-- Home -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($page === "home") ? 'text-light fw-bold' : '' ?>" href="<?= BASEURL ?>/index.php">Home</a>
+        </li>
+
+        <!-- Master (Only for Owner) -->
+        <?php if ($level === 'owner'): ?>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <?php 
-              if ($page==='barang') echo "<span class='text-light fw-bold'>Barang</span>";
-              elseif ($page==='supplier') echo "<span class='text-light fw-bold'>Supplier</span>";
-              elseif($page==='pelanggan') echo "<span class='text-light fw-bold'>Pelanggan</span>";
-              elseif($page==='user') echo "<span class='text-light fw-bold'>User</span>";
-              else echo "Master";
-              ?>
+            <a class="nav-link dropdown-toggle <?= $isMasterActive ? 'text-light fw-bold' : '' ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <?= $masterTitle ?>
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="<?= BASEURL ?>/barang/index.php">Barang</a></li>
               <li><a class="dropdown-item" href="<?= BASEURL ?>/supplier/index.php">Supplier</a></li>
-              <li><a class="dropdown-item" href="<?= BASEURL ?>/pelanggan/index.php">Pelanggan</a></li>
+              <li><a class="dropdown-item" href="<?= BASEURL ?>/pelanggan/index.php">Customer</a></li>
               <li><a class="dropdown-item" href="<?= BASEURL ?>/user/index.php">User</a></li>
-              <!-- <li><hr class="dropdown-divider"></li> -->
-              <!-- <li><a class="dropdown-item" href="#">Something else here</a></li> -->
             </ul>
           </li>
-          <?php endif?>
-          <li class="nav-item">
-            <a class="nav-link <?= ($page === 'transaksi') ? 'text-light fw-bold' : '' ?>" href="<?= BASEURL ?>/transaksi/index.php">Transaksi</a>
-          </li>
+        <?php endif; ?>
 
-          <li class="nav-item">
-            <a class="nav-link <?= ($page === 'report') ? 'text-light fw-bold' : '' ?>" href="<?= BASEURL ?>/report.php">Report</a>
-          </li>
-        </ul>
+        <!-- Transaksi -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($page === 'masuk') ? 'text-light fw-bold' : '' ?>" href="<?= BASEURL ?>/transaksi/index.php">Masuk</a>
+        </li>
 
-        
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item dropdown">
-            <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <span class="text-<?= ($page === 'profile') ? 'light fw-bold' : 'light fw-bold'; ?>"><?php echo (isset($_SESSION['user']))? $_SESSION['user']['username']:''?></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-dark">
-              <!-- <li><a class="dropdown-item" href="#">Profile</a></li> -->
-              <li><a class="dropdown-item bg-info text-light fw-semibold" href="<?= BASEURL ?>/logout.php" onclick="return confirm('apakah anda yakin ingin logout')">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
+        <!-- Report -->
+        <li class="nav-item">
+          <a class="nav-link <?= ($page === 'report') ? 'text-light fw-bold' : '' ?>"
+          href="<?= BASEURL ?>/report.php?report_type=margin_perbarang_percustomer">
+          Report</a>
+        </li>
+      </ul>
 
-      </div>
+      <!-- Profile & Logout -->
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item dropdown">
+          <button class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-light fw-bold"><?= $_SESSION['user']['username'] ?? '' ?></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item bg-info text-light fw-semibold" href="<?= BASEURL ?>/logout.php" onclick="return confirm('apakah anda yakin ingin logout')">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
