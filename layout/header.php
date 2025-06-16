@@ -11,6 +11,7 @@ if (!isset($_SESSION['user'])){
 $level = ($_SESSION['level']);
 if ($level==='kasir' && ($page==='supplier'||$page==='barang'||$page==='user'||$page==='customer')){
   header("location: /Project-BasisData2/");
+  exit;
 }
 
 ?>

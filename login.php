@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD']=="POST"){
 }
 if (isset($_SESSION['user'])){
   header('location:index.php');
+  exit;
 }
 ?>
 <DOCTYPE html>
