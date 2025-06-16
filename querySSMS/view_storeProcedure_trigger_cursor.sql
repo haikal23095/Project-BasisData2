@@ -1,24 +1,14 @@
---USE basisdata2;
-select * from sys.procedures;
-select * from sys.views;
-select * from sys.triggers;
-
-SELECT * FROM sys.dm_exec_cursors(NULL);
-
-SELECT OBJECT_NAME(object_id) AS procedure_name, definition
-FROM sys.sql_modules
-WHERE definition LIKE '%CURSOR%';
-
-SELECT ROUTINE_NAME, ROUTINE_DEFINITION
-FROM INFORMATION_SCHEMA.ROUTINES
-WHERE ROUTINE_DEFINITION LIKE '%CURSOR%'
-  AND ROUTINE_TYPE = 'VIEWS';
-
 select * from barang
 
 select * from detail_transaksi_masuk
 
-select * from detail_transaksi_keluar
+select * from transaksi_keluar
+
+select * from detail_transaksi_keluar order by id_barang
+
+select * from customer
+
+select * from [user]
 
 alter view vw_riwayat_masuk as
 select m.id_transaksi_masuk IDTransaksiMasuk, m.tanggal Tanggal, s.nama_supplier Supplier, m.metode_pembayaran Pembayaran, sum(dm.jumlah) JumlahBarang, sum(dm.harga*dm.jumlah) TotalHarga
@@ -38,27 +28,57 @@ select * from vw_riwayat_keluar order by Tanggal desc
 
 
 alter view margin_perbarang as
-select b.id_barang IDBarang, b.nama_barang NamaBarang, avg(dm.harga) HargaBeli, b.harga_jual HargaJual, avg(dk.harga) HargaTerjual, sum(dk.jumlah) JumlahTerjual, (avg(dk.harga)-avg(dm.harga)) MarginPerUnit, (avg(dk.harga)-avg(dm.harga))*sum(dk.jumlah)TotalLaba
+select b.id_barang IDBarang, b.nama_barang NamaBarang, avg(dm.harga) HargaBeli, b.harga_jual HargaJual, sum(dk.harga*dk.jumlah)/sum(dk.jumlah)  HargaTerjualAvg, sum(dk.jumlah) JumlahTerjual, (dk.harga-dm.harga)*dk.jumlah MarginPerUnitAvg, (avg(dk.harga)-avg(dm.harga))*sum(dk.jumlah) TotalLaba
 from barang b, detail_transaksi_keluar dk, detail_transaksi_masuk dm
 where b.id_barang=dk.id_barang and dm.id_barang=b.id_barang
 group by b.id_barang, b.nama_barang, b.harga_jual
 
 select * from margin_perbarang order by IDBarang
+select * from detail_transaksi_keluar order by id_barang, id_transaksi_keluar
+
 
 alter view margin_perbarang_percustomer as
-select b.id_barang IDBarang, c.nama_customer Customer, b.nama_barang NamaBarang, avg(dm.harga) HargaBeli, b.harga_jual HargaJual, avg(dk.harga) HargaTerjual, sum(dk.jumlah) JumlahTerjual, (avg(dk.harga)-avg(dm.harga)) MarginPerUnit, (avg(dk.harga)-avg(dm.harga))*sum(dk.jumlah)TotalLaba
+select b.id_barang IDBarang, b.nama_barang NamaBarang, c.id_customer IDCustomer, c.nama_customer Customer, avg(dm.harga) HargaBeli, b.harga_jual HargaJual, avg(dk.harga) HargaTerjual, sum(dk.jumlah) JumlahTerjual, (avg(dk.harga)-avg(dm.harga)) MarginPerUnit, (avg(dk.harga)-avg(dm.harga))*sum(dk.jumlah) TotalLaba
 from barang b, detail_transaksi_keluar dk, detail_transaksi_masuk dm, transaksi_keluar tk, customer c
-where b.id_barang=dk.id_barang and dm.id_barang=b.id_barang and dk.id_transaksi_keluar=tk.id_transaksi_keluar and tk.id_transaksi_keluar=c.id_customer
-group by b.id_barang, b.nama_barang, b.harga_jual, c.nama_customer
+where b.id_barang=dk.id_barang and dm.id_barang=b.id_barang and dk.id_transaksi_keluar=tk.id_transaksi_keluar and tk.id_customer=c.id_customer
+group by b.id_barang, b.nama_barang, b.harga_jual, c.nama_customer, c.id_customer
 
-select * from margin_perbarang_percustomer order by IDBarang
 
-create view penjualan_barang_harian as
-select tk.tanggal Tanggal, b.nama_barang NamaBarang, avg(dk.harga) HargaTerjual, avg(dm.harga) HargaBeli, sum(dk.jumlah) JumlahTerjual, (avg(dk.harga)-avg(dm.harga))*sum(dk.jumlah) Margin
-from barang b, detail_transaksi_masuk dm, detail_transaksi_keluar dk, transaksi_keluar tk
-where b.id_barang=dm.id_barang and b.id_barang=dk.id_barang and tk.id_transaksi_keluar=dk.id_transaksi_keluar
-group by tk.tanggal, b.nama_barang
 
+alter view margin_perbarang_percustomer as
+select b.id_barang IDBrg, b.nama_barang NmBrg, c.id_customer IDCust, c.nama_customer NmCust,
+avgHBeli.hasil AvgHargaBeli,
+sum(dk.harga*dk.jumlah)/sum(dk.jumlah) AvgHargaTerjual, 
+sum(dk.jumlah) JmlTerjual,
+sum((dk.harga-avgHBeli.hasil)*dk.jumlah)/sum(dk.jumlah) AvgMarginPerUnit,
+sum((dk.harga-avgHBeli.hasil)*dk.jumlah) TotalLaba
+from barang b, (select id_barang, sum(jumlah*harga)/sum(jumlah) as hasil from detail_transaksi_masuk group by id_barang) avgHBeli, detail_transaksi_keluar dk, transaksi_keluar tk, customer c
+where b.id_barang=avgHBeli.id_barang and b.id_barang=dk.id_barang and dk.id_transaksi_keluar=tk.id_transaksi_keluar and tk.id_customer=c.id_customer
+group by b.id_barang, b.nama_barang, c.id_customer, c.nama_customer, avgHBeli.hasil
+
+select * from margin_perbarang_percustomer order by IDBrg
+select sum(totallaba) from margin_perbarang_percustomer group by IDBarang order by IDBarang
+select sum(TotalLaba) from margin_perbarang 
+select * from margin_perbarang
+
+alter view penjualan_barang_harian as
+select tk.tanggal Tanggal, b.nama_barang NamaBarang, avgHBeli.avg_harga_beli HargaBeli,
+sum(dk.harga*dk.jumlah)/sum(dk.jumlah) HargaTerjual, 
+sum(dk.jumlah) JumlahTerjual,
+(sum(dk.harga*dk.jumlah) - (avgHBeli.avg_harga_beli * sum(dk.jumlah))) Margin
+from barang b, 
+(select id_barang, sum(jumlah*harga)/sum(jumlah) avg_harga_beli from detail_transaksi_masuk group by id_barang) avgHBeli,
+detail_transaksi_keluar dk,
+transaksi_keluar tk
+where b.id_barang = avgHBeli.id_barang and b.id_barang = dk.id_barang and dk.id_transaksi_keluar = tk.id_transaksi_keluar
+group by tk.tanggal, b.nama_barang, avgHBeli.avg_harga_beli
+
+
+alter view penjualan_barang_harian as
+select tk.tanggal
+
+select sum(margin) from penjualan_barang_harian
+select sum(TotalLaba) from margin_perbarang_percustomer
 select * from detail_transaksi_keluar 11 12 14 15 brg
 select * from barang
 select * from transaksi_keluar order by tanggal desc
@@ -95,7 +115,7 @@ select * from barang
 insert into detail_transaksi_masuk values (10, 3, 6, 144000)
 
 -- trigger update,insert,delete di saat Masuk (DTM) - update stok
-create trigger trDtm	Update on detail_transaksi_masuk for insert, delete, update as begin
+create trigger trDtm on detail_transaksi_masuk for insert, delete, update as begin
 	-- inserted
 	update barang set stok=stok+(select jumlah from inserted) where id_barang=(select id_barang from inserted)
 
@@ -114,6 +134,7 @@ create trigger trDtkUpdate on detail_transaksi_keluar for insert, delete, update
 	-- deleted
 	update barang set stok=stok+(select jumlah from deleted) where id_barang=(select id_barang from deleted)
 end
+
 select id_transaksi_masuk, sum(jumlah) jml from detail_transaksi_masuk where id_barang=1 group by id_barang, id_transaksi_masuk
 select id_transaksi_keluar, sum(jumlah) jml from detail_transaksi_keluar where id_barang=1 group by id_barang, id_transaksi_keluar
 select * from detail_transaksi_keluar
@@ -160,5 +181,22 @@ create procedure spUpdateHargaJual as begin
 end
 exec spUpdateHargaJual
 
+select top 1 id_transaksi_masuk from transaksi_masuk order by id_transaksi_masuk desc
 select * from detail_transaksi_masuk order by id_transaksi_masuk desc
 select * from barang
+
+select * from detail_transaksi_masuk order by id_transaksi_masuk desc
+select * from barang
+
+create procedure sp_margin_range_tgl @awal date, @akhir date as begin
+	select * from penjualan_barang_harian p where p.Tanggal>=@awal and p.Tanggal<=@akhir order by tanggal desc
+end
+exec sp_margin_range_tgl '2024-04-21', '2024-04-30'
+
+select b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
+from detail_transaksi_keluar d, barang b
+where id_transaksi_keluar=2 and d.id_barang=b.id_barang
+
+select b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
+from detail_transaksi_masuk d, barang b
+where id_transaksi_masuk=2 and d.id_barang=b.id_barang
