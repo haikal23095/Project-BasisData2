@@ -116,6 +116,15 @@ function insertDataSupplier($data){
     return sqlsrv_query(DB, $query, $params);
 }
 
+function insertDataCust($data){
+    $nama = htmlspecialchars($data["nama_customer"]);
+    $tel = htmlspecialchars($data["tel"]);
+    $alamat = htmlspecialchars($data["alamat"]);
+    $query = "INSERT INTO customer (nama_customer, telepon, alamat) VALUES (?, ?, ?)";
+    $params = array($nama, $tel, $alamat);
+    return sqlsrv_query(DB, $query, $params);
+}
+
 function insertTransaksi($data, $jenis = 'keluar') {
     $conn = DB;
 
@@ -263,7 +272,7 @@ function insertDataUser($data) {
 
 function getDataDetailTransaksiKeluarByID($IDTransaksi){
     $query = sqlsrv_query(DB, "
-    select b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
+    select d.id_barang, b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
     from detail_transaksi_keluar d, barang b
     where id_transaksi_keluar=$IDTransaksi and d.id_barang=b.id_barang");
     $result = [];
@@ -277,7 +286,7 @@ function getDataDetailTransaksiKeluarByID($IDTransaksi){
 
 function getDataDetailTransaksiMasukByID($IDTransaksi){
     $query = sqlsrv_query(DB, "
-    select b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
+    select d.id_barang, b.nama_barang Barang, d.harga Harga, d.jumlah Jumlah, d.harga*d.jumlah Subtotal
     from detail_transaksi_masuk d, barang b
     where id_transaksi_masuk=$IDTransaksi and d.id_barang=b.id_barang");
     $result = [];
@@ -388,5 +397,53 @@ function updateBarang($id, $nama, $stok, $harga_jual) {
 
     return sqlsrv_query($conn, $query, $params);
 }
+
+function getDetailBarangKeluar($id_transaksi, $id_barang) {
+    $stmt = sqlsrv_query(DB, "SELECT dtk.jumlah, dtk.harga, b.nama_barang 
+                            FROM detail_transaksi_keluar dtk
+                            JOIN barang b ON b.id_barang = dtk.id_barang
+                            WHERE dtk.id_transaksi_keluar = ? AND dtk.id_barang = ?", 
+                            [$id_transaksi, $id_barang]);
+    return sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+}
+
+function updateDetailBarangKeluar($id_transaksi, $id_barang, $jumlah, $harga) {
+    $stmt = sqlsrv_query(DB, "UPDATE detail_transaksi_keluar 
+                            SET jumlah = ?, harga = ?
+                            WHERE id_transaksi_keluar = ? AND id_barang = ?", 
+                            [$jumlah, $harga, $id_transaksi, $id_barang]);
+    return $stmt !== false;
+}
+
+function deleteDetailBarangKeluar($id_transaksi, $id_barang) {
+    $stmt = sqlsrv_query(DB, "DELETE FROM detail_transaksi_keluar 
+                            WHERE id_transaksi_keluar = ? AND id_barang = ?", 
+                            [$id_transaksi, $id_barang]);
+    return $stmt !== false;
+}
+function getDetailBarangmasuk($id_transaksi, $id_barang) {
+    $stmt = sqlsrv_query(DB, "SELECT dtk.jumlah, dtk.harga, b.nama_barang 
+                            FROM detail_transaksi_masuk dtk
+                            JOIN barang b ON b.id_barang = dtk.id_barang
+                            WHERE dtk.id_transaksi_masuk = ? AND dtk.id_barang = ?", 
+                            [$id_transaksi, $id_barang]);
+    return sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+}
+
+function updateDetailBarangmasuk($id_transaksi, $id_barang, $jumlah, $harga) {
+    $stmt = sqlsrv_query(DB, "UPDATE detail_transaksi_masuk 
+                            SET jumlah = ?, harga = ?
+                            WHERE id_transaksi_masuk = ? AND id_barang = ?", 
+                            [$jumlah, $harga, $id_transaksi, $id_barang]);
+    return $stmt !== false;
+}
+
+function deleteDetailBarangmasuk($id_transaksi, $id_barang) {
+    $stmt = sqlsrv_query(DB, "DELETE FROM detail_transaksi_masuk 
+                            WHERE id_transaksi_masuk = ? AND id_barang = ?", 
+                            [$id_transaksi, $id_barang]);
+    return $stmt !== false;
+}
+
 
 ?>

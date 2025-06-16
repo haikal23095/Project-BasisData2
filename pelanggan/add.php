@@ -27,8 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     validateAlamat($alamat, $errors['alamat']);
 
     if (empty($errors['nama_customer']) && empty($errors['telepon']) && empty($errors['alamat'])){
-        if (insertDataPelanggan($data)) {
+        if (insertDataCust($data)) {
             header("Location: " . BASEURL . "/pelanggan/index.php");
+            exit;
         } else {
             echo "<script>
             alert('data gagal di tambahkan');

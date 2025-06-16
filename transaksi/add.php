@@ -142,11 +142,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (table.rows.length > 1) row.remove();
     }
 
+    function isDuplicateBarang(selectedValue, currentSelect) {
+        const allSelects = document.querySelectorAll('select[name$="[id_barang]"]');
+        let count = 0;
+        allSelects.forEach(select => {
+            if (select.value === selectedValue) {
+                if (select !== currentSelect) count++;
+            }
+        });
+        return count > 0;
+    }
+
     function loadHarga(selectElement) {
         const idBarang = selectElement.value;
         if (!idBarang) return;
 
-        // Ambil elemen input harga di baris yang sama
+        if (isDuplicateBarang(idBarang, selectElement)) {
+            alert("Barang ini sudah ditambahkan sebelumnya!");
+            selectElement.value = ''; // Reset selection
+            return;
+        }
+
         const row = selectElement.closest('tr');
         const hargaInput = row.querySelector('input[name$="[harga]"]');
 

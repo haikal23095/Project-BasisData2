@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         ];
         if (insertDataUser($data)) {
             header("Location: " . BASEURL . "/user/index.php");
+            exit;
         } else {
             echo "<script>
             alert('data gagal di tambahkan');
