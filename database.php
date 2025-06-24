@@ -248,7 +248,7 @@ function updateDataTransaksi(){
 
 
 function getAllUser(){
-    $query = "SELECT * FROM [user]";
+    $query = "SELECT * FROM tampilkan_user";
     $result = sqlsrv_query(DB, $query);
     $user = [];
     if ($result && sqlsrv_has_rows($result)) {
