@@ -42,10 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label for="nama_barang" class="form-label">Nama Barang</label>
             <input type="text" class="form-control" id="nama_barang" name="nama_barang" required value="<?= htmlspecialchars($barang['nama_barang']) ?>">
         </div>
-        <div class="mb-3">
-            <label for="stok" class="form-label">Stok</label>
-            <input type="number" class="form-control" id="stok" name="stok" required value="<?= $barang['stok'] ?>">
-        </div>
+        <input type="hidden" class="form-control" id="stok" name="stok" required value="<?= $barang['stok'] ?>">
         <div class="mb-3">
             <label for="harga_jual" class="form-label">Harga Jual</label>
             <input type="number" class="form-control" id="harga_jual" name="harga_jual" required value="<?= $barang['harga_jual'] ?>" step="1000">
