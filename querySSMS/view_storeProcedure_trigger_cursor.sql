@@ -1,3 +1,5 @@
+use basisdata2
+
 select * from barang
 
 select * from detail_transaksi_masuk
@@ -10,6 +12,16 @@ select * from customer
 
 select * from [user]
 
+select * from sys.views
+
+select * from sys.procedures
+
+select * from sys.triggers
+
+SELECT OBJECT_NAME(object_id) AS ObjectName, definition AS ObjectDefinition
+FROM sys.sql_modules WHERE definition LIKE '%DECLARE%CURSOR%';
+
+-- menampilkan transaksi masuk berdasarkan tanggal, nama supplier, dan metode pembayaran
 alter view vw_riwayat_masuk as
 select m.id_transaksi_masuk IDTransaksiMasuk, m.tanggal Tanggal, s.nama_supplier Supplier, m.metode_pembayaran Pembayaran, sum(dm.jumlah) JumlahBarang, sum(dm.harga*dm.jumlah) TotalHarga
 from transaksi_masuk m, supplier s, detail_transaksi_masuk dm
