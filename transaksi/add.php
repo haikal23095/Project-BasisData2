@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <input type="number" name="items[0][jumlah]" class="form-control" value="1">
                     </td>
                     <td>
-                        <input type="number" name="items[0][harga]" class="form-control" step="1000">
+                        <input type="number" name="items[0][harga]" class="form-control" step="100">
                     </td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger" onclick="removeRow(this)">-</button>
